@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Car {
 
     private String id;
     private String brandId;
-    private String model;
+    private Integer model;
     private String plate;
     private String reference;
     private Integer km;

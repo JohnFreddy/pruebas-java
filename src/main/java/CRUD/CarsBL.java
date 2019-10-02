@@ -20,9 +20,9 @@ public class CarsBL {
         return true;
     }
 
-    public boolean validateModel(Car car) {
+    public boolean validateModel(Integer model) {
         Integer currentYear = utilsRepository.getCurrentYear();
-        if (car.getModel() > currentYear) {
+        if (model > currentYear) {
             throw new BusinessException();
         }
         return true;

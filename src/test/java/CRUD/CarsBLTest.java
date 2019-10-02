@@ -72,10 +72,9 @@ public class CarsBLTest {
         carsBL.createCar(car);
         Mockito.when(utilsRepository.getCurrentYear()).thenReturn(2019);
 
-        boolean isValidated = carsBL.validateModel(car);
+        boolean isValidated = carsBL.validateModel(car.getModel());
         Mockito.verify(utilsRepository).getCurrentYear();
         Assert.assertTrue(isValidated);
 
     }
-
 }

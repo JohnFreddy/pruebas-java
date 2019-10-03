@@ -8,8 +8,8 @@ public class BerlinClockBL {
         this.repository = repository;
     }
 
-    public String convertSingleMinutes() {
-        Integer currentMinute = repository.getCurrentMinute();
+    public String convertSingleMinutes(String minutes) {
+        Integer currentMinute = Integer.parseInt(minutes);
         currentMinute = currentMinute % 10;
         StringBuilder x = new StringBuilder();
         x = getSingleTimeValue(x, "Y", currentMinute);
@@ -17,8 +17,8 @@ public class BerlinClockBL {
         return setNullValues(x, 4);
     }
 
-    public String convertFiveMinutes() {
-        Integer currentMinute = repository.getCurrentMinute();
+    public String convertFiveMinutes(String minutes) {
+        Integer currentMinute = Integer.parseInt(minutes);
 
         currentMinute = (int) (double) currentMinute / 5;
         StringBuilder x = new StringBuilder();
@@ -33,8 +33,8 @@ public class BerlinClockBL {
         return setNullValues(x, 11);
     }
 
-    public String convertSingleHours() {
-        Integer currentHour = repository.getCurrentHour();
+    public String convertSingleHours(String hours) {
+        Integer currentHour = Integer.parseInt(hours);
         currentHour = currentHour % 10;
         StringBuilder x = new StringBuilder();
         x = getSingleTimeValue(x, "R", currentHour);
@@ -59,8 +59,8 @@ public class BerlinClockBL {
         return x;
     }
 
-    public String convertFiveHours() {
-        Integer currentHour = repository.getCurrentHour();
+    public String convertFiveHours(String hours) {
+        Integer currentHour = Integer.parseInt(hours);
         currentHour = (int) (double) currentHour / 5;
         StringBuilder x = new StringBuilder();
         for (int i = 1; i <= currentHour; i++) {
@@ -70,13 +70,25 @@ public class BerlinClockBL {
         return setNullValues(x, 4);
     }
 
-    public String convertSeconds() {
-        Integer currentSeconds = repository.getCurrentSeconds();
+    public String convertSeconds(String seconds) {
+        Integer currentSeconds = Integer.parseInt(seconds);
         String x = "Y";
         for (int i = 1; i <= currentSeconds; i++) {
             x = x.equals("Y") ? "O" : "Y";
         }
         System.out.println(x);
         return x;
+    }
+
+    public String convertCompleteDate(String date) {
+        String[] d = date.split(":");
+
+        String fh = convertFiveHours(d[0]);
+        String sh = convertSingleHours(d[0]);
+        String fm = convertFiveMinutes(d[1]);
+        String sm = convertSingleMinutes(d[1]);
+        String s = convertSeconds(d[2]);
+
+        return s+fh+sh+fm+sm;
     }
 }

@@ -1,5 +1,7 @@
 package Berlin;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class BerlinClockBLTest {
     @Mock
     private BerlinClockRepository repository;
@@ -20,6 +22,7 @@ public class BerlinClockBLTest {
 
     @Before
     public void setUp() throws Exception {
+        //MockitoAnnotations.initMocks(this);
         berlinClockBL = new BerlinClockBL(repository);
         time = new Time().toBuilder()
                 .singleMinutes("OOOO")
@@ -31,53 +34,94 @@ public class BerlinClockBLTest {
     }
 
     @Test
-    public void shouldConvertSingleMinuteToBerlinTime() {
-        Mockito.when(repository.getCurrentMinute()).thenReturn(59);
+    @Parameters({
+            "00, OOOO",
+            "59, YYYY",
+            "32, YYOO",
+            "34, YYYY",
+            "35, OOOO"
+    })
+    public void shouldConvertSingleMinuteToBerlinTime(String minutes, String expected) {
+        //Mockito.when(repository.getCurrentMinute()).thenReturn(59);
 
-        String result = berlinClockBL.convertSingleMinutes();
-        Mockito.verify(repository).getCurrentMinute();
+        String result = berlinClockBL.convertSingleMinutes(minutes);
 
-        Assert.assertEquals("YYYY", result);
+        Assert.assertEquals(expected, result);
     }
 
     @Test
-    public void shouldConvertFiveMinutesToBerlinTime() {
-        Mockito.when(repository.getCurrentMinute()).thenReturn(59);
+    @Parameters({
+            "00, OOOOOOOOOOO",
+            "59, YYRYYRYYRYY",
+            "04, OOOOOOOOOOO",
+            "23, YYRYOOOOOOO",
+            "35, YYRYYRYOOOO"
+    })
+    public void shouldConvertFiveMinutesToBerlinTime(String minutes, String expected) {
+        //Mockito.when(repository.getCurrentMinute()).thenReturn(59);
 
-        String result = berlinClockBL.convertFiveMinutes();
-        Mockito.verify(repository).getCurrentMinute();
+        String result = berlinClockBL.convertFiveMinutes(minutes);
 
-        Assert.assertEquals("YYRYYRYYRYY", result);
+        Assert.assertEquals(expected, result);
     }
 
     @Test
-    public void shouldConvertSingleHoursToBerlinTime() {
-        Mockito.when(repository.getCurrentHour()).thenReturn(23);
+    @Parameters({
+            "00, OOOO",
+            "23, RRRO",
+            "02, RROO",
+            "08, RRRO",
+            "14, RRRR"
+    })
+    public void shouldConvertSingleHoursToBerlinTime(String hours, String expected) {
+        //Mockito.when(repository.getCurrentHour()).thenReturn(23);
 
-        String result = berlinClockBL.convertSingleHours();
-        Mockito.verify(repository).getCurrentHour();
+        String result = berlinClockBL.convertSingleHours(hours);
 
-        Assert.assertEquals("RRRO", result);
+        Assert.assertEquals(expected, result);
     }
 
     @Test
-    public void shouldConvertFiveHoursToBerlinTime() {
-        Mockito.when(repository.getCurrentHour()).thenReturn(23);
+    @Parameters({
+            "00, OOOO",
+            "23, RRRR",
+            "02, OOOO",
+            "08, ROOO",
+            "16, RRRO"
+    })
+    public void shouldConvertFiveHoursToBerlinTime(String hours, String expected) {
+        //Mockito.when(repository.getCurrentHour()).thenReturn(23);
 
-        String result = berlinClockBL.convertFiveHours();
-        Mockito.verify(repository).getCurrentHour();
+        String result = berlinClockBL.convertFiveHours(hours);
 
-        Assert.assertEquals("RRRR", result);
+        Assert.assertEquals(expected, result);
     }
 
     @Test
-    public void shouldConvertSecondsToBerlinTime() {
-        Mockito.when(repository.getCurrentSeconds()).thenReturn(59);
+    @Parameters({
+            "00, Y",
+            "59, O"
+    })
+    public void shouldConvertSecondsToBerlinTime(String seconds, String expected) {
+       // Mockito.when(repository.getCurrentSeconds()).thenReturn(59);
 
-        String result = berlinClockBL.convertSeconds();
-        Mockito.verify(repository).getCurrentSeconds();
+        String result = berlinClockBL.convertSeconds(seconds);
 
-        Assert.assertEquals("O", result);
+        Assert.assertEquals(expected, result);
+    }
+
+    @Test
+    @Parameters({
+            "00:00:00, YOOOOOOOOOOOOOOOOOOOOOOO",
+            "23:59:59, ORRRRRRROYYRYYRYYRYYYYYY",
+            "16:50:06, YRRROROOOYYRYYRYYRYOOOOO",
+            "11:37:01, ORROOROOOYYRYYRYOOOOYYOO"
+    })
+    public void shouldConvertCompleteDateToBerlinTime(String date, String expected) {
+
+        String result = berlinClockBL.convertCompleteDate(date);
+
+        Assert.assertEquals(expected, result);
     }
 
 }
